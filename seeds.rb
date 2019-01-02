@@ -17,3 +17,23 @@ ActiveRecord::Base.establish_connection(
 )
 
 # do stuff to store initial data
+
+if ENV['DATABASE_URL']
+  require 'pg'
+  # use DATABASE_URL since this is Heroku
+  ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
+else
+  # Use sqlite since this is my computer
+  require 'sqlite3'
+  ActiveRecord::Base.establish_connection(
+    adapter: 'sqlite3',
+    database: 'db/development.db'
+  )
+end
+
+register Sinatra::Reloader
+enable :sessions
+
+get '/' do
+  erb :index
+end
